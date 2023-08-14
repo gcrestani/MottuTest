@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace MottuTest.Model.Models
 {
-  public class Urls : BaseEntity
+  public class BaseEntity
   {
-    public double Hits { get; set; }
-    public string Url { get; set; }
-    public string ShortUrl { get; set; }
+    public int Id { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
   }
 }

@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MottuTest.Api.Services;
+using MottuTest.Model.Models;
+using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MottuTest.Api.Controllers
 {
@@ -7,35 +11,69 @@ namespace MottuTest.Api.Controllers
   public class UrlController : ControllerBase
   {
     private readonly ILogger<UrlController> _logger;
+    private readonly IUrlService _urlService;
 
-    public UrlController(ILogger<UrlController> logger)
+    public UrlController(ILogger<UrlController> logger, IUrlService urlService)
     {
       _logger = logger;
+      _urlService = urlService;
     }
     
-    [HttpPost]
-    [Route("/{url}")]
+    [HttpPost("shortUrl")]
+    [SwaggerOperation(
+      Summary ="Shorten a URL",
+      Description = "Returns a shortened URL"
+    )]
+    [SwaggerResponse(200, "Return a shortened URL", typeof(Urls))]
+    [SwaggerResponseAttribute(200,type:typeof(Urls))]
     public async Task<IActionResult> shortUrl(string url)
     {
-      return Ok(Url);
+      if (string.IsNullOrEmpty(url))
+      {
+        throw new ArgumentException();
+      }
+
+      var shortenedUrl = await _urlService.ShortUrl(url);
+      return Ok(shortenedUrl);
     }
     
-    [HttpPost]
-    [Route("/{qty}")]
+    [HttpPost("topUrls")]
+    [SwaggerOperation(
+      Summary = "Return an ordered list of URL",
+      Description = "Return a list of URL ordered by access desc"
+    )]
+    [SwaggerResponse(200, "Return a list of URL", typeof(List<Urls>))]
+    [SwaggerResponseAttribute(200, type: typeof(List<Urls>))]
     public async Task<IActionResult> topUrls(int qty)
     {
-      return Ok(qty);
+      if (qty<=0)
+      {
+        throw new ArgumentException();
+      }
+      var urlList = await _urlService.TopUrls(qty);
+      
+      return Ok(urlList);
     }
 
-    [HttpPost]
-    [Route("/{shortUrl}")]
+    [HttpPost("validateUrl")]
+    [SwaggerOperation(
+      Summary = "Return a bool indicating if the URL is valid",
+      Description = "Return a bool indicating if the URL is valid"
+    )]
+    [SwaggerResponse(200, "Return a bool indicating if the URL is valid", typeof(bool))]
+    [SwaggerResponseAttribute(200, type: typeof(bool))]
     public async Task<IActionResult> validateUrl (string shortUrl)
     {
-      return Ok(true);
+      if (string.IsNullOrEmpty(shortUrl))
+      {
+        throw new ArgumentException();
+      }
+      var isUrlValid= await _urlService.ValidateUrl(shortUrl);
+      
+      return Ok(isUrlValid);
     }
 
-    [HttpPost]
-    [Route("/{shortUrlCheck}")]
+    [HttpPost("accessUrl")]
     public async Task<IActionResult> accessUrl(string shortUrlCheck)
     {
       return Ok();

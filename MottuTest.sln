@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MottuTest.Model", "MottuTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MottuTest.Tests", "MottuTest.Tests\MottuTest.Tests.csproj", "{D6F12A91-2083-4178-83AB-14FFA1E14AAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MottuTest.Api.DataStore.Postgres", "MottuTest.Api.DataStore.Postgres\MottuTest.Api.DataStore.Postgres.csproj", "{772ADFDC-5D55-4187-B4F0-D2CC072A5361}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{D6F12A91-2083-4178-83AB-14FFA1E14AAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6F12A91-2083-4178-83AB-14FFA1E14AAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6F12A91-2083-4178-83AB-14FFA1E14AAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772ADFDC-5D55-4187-B4F0-D2CC072A5361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772ADFDC-5D55-4187-B4F0-D2CC072A5361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772ADFDC-5D55-4187-B4F0-D2CC072A5361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772ADFDC-5D55-4187-B4F0-D2CC072A5361}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
