@@ -12,6 +12,6 @@ namespace MottuTest.Api.DataStore.Postgres
   {
     public Context(DbContextOptions<Context> options):base(options){}
 
-    public DbSet<Urls> Urls { get; set; }
+    public DbSet<UrlDto> Urls { get; set; }
   }
 }
