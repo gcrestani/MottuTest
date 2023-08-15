@@ -78,7 +78,7 @@ namespace MottuTest.Api.Controllers
     public async Task<IActionResult> accessUrl(string shortUrlCode)
     {
       var shortUrl = $"{Request.Scheme}://{Request.Host}/{shortUrlCode}";
-      var url = await _urlService.ReturnUrlByShortUrl(shortUrl);
+      var url = await _urlService.accessShortUrl(shortUrl);
 
       if (url!=null)
       {

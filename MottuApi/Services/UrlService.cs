@@ -11,7 +11,7 @@ namespace MottuTest.Api.Services
     Task<Url> ShortUrl(string url, HttpRequest request);
     Task<List<Url>> TopUrls(int qty);
     Task<bool> ValidateUrl(string url);
-    Task<Url> ReturnUrlByShortUrl(string shortUrl);
+    Task<Url> accessShortUrl(string shortUrl);
 
   }
   public class UrlService : IUrlService
@@ -52,9 +52,7 @@ namespace MottuTest.Api.Services
       }
       //send to RabbitMq
       
-
       return _translator.ToUrl(shortUrl);
-      //LOGS
     }
 
     public async Task<List<Url>> TopUrls(int qty)
@@ -74,11 +72,12 @@ namespace MottuTest.Api.Services
       return (url!=null);
     }
 
-    public async Task<Url> ReturnUrlByShortUrl(string shortUrl)
+    public async Task<Url> accessShortUrl(string shortUrl)
     {
       var urlDto = await _queries.GetUrlByShortUrl(shortUrl);
       if (urlDto == null)
         return null;
+      _ = await _commands.IncrementHitByShortUrl(urlDto);
       return _translator.ToUrl(urlDto);
     }
   }

@@ -11,6 +11,7 @@ namespace MottuTest.Api.DataStore.Postgres.DataAccess
   public interface ICommands
   {
     Task<int> InsertUrl(UrlDto url);
+    Task<int> IncrementHitByShortUrl(UrlDto url);
   }
   public class Commands :ICommands
   {
@@ -21,6 +22,13 @@ namespace MottuTest.Api.DataStore.Postgres.DataAccess
     {
       _context = context;
       _queries = queries;
+    }
+
+    public async Task<int> IncrementHitByShortUrl(UrlDto url)
+    {
+      url.Hits++;
+      await _context.SaveChangesAsync();
+      return url.Hits;
     }
 
     public async Task<int> InsertUrl(UrlDto url)
