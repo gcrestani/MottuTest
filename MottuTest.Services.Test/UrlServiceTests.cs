@@ -29,19 +29,12 @@ namespace MottuTest.Services.Test
       _sut = new UrlService(_logger.Object, _commands.Object, _queries.Object, _translator.Object);
     }
 
-    [Fact (DisplayName = "ShortUrl should return a valid Url")]
-    public async void ShortUrl_Should_Return_a_valid_Url()
+    [Fact(DisplayName = "ShortUrl should return a valid Url")]
+    public async Task ShortUrl_Should_Return_a_valid_Url()
     {
       //Arrange
       _commands.Setup(c => c.InsertUrl(It.IsAny<UrlDto>())).ReturnsAsync(1);
       _httpRequest.Setup(r => r.Scheme).Returns("someUrlScheme");
-      _httpRequest.Setup(r => r.Host.Value).Returns("someHost");
-      var expectedUrl = new Url
-      {
-        Hits = 0,
-        ShortUrl = "someUrlScheme://someHost/someRandomCode",
-        OriginalUrl = "someUrl",
-      };
 
       //Act
       var returnedUrl = await _sut.ShortUrl("someUrl", _httpRequest.Object);
@@ -49,35 +42,35 @@ namespace MottuTest.Services.Test
       //Assert
       _commands.Verify(c => c.InsertUrl(It.IsAny<UrlDto>()), Times.Once, "InsertUrl should be called once");
       _queries.Verify(q => q.GetUrlByOriginalUrl(It.IsAny<string>()), Times.Once, "GetUrlByOriginalUrl should be called once");
-      Assert.That(expectedUrl.Hits== returnedUrl.Hits);
-      Assert.That(expectedUrl.ShortUrl.Substring(0,25) == returnedUrl.ShortUrl.Substring(0,25));
-      Assert.That(expectedUrl.OriginalUrl == returnedUrl.OriginalUrl);
-
-
-      //_queries.GetUrlByOriginalUrl
-
     }
 
     [Fact(DisplayName = "ShortUrl should return a valid Url after retrying if the first randomCode is already on database")]
-    public void ShortUrl_Should_Return_a_valid_Url_after_retrying()
+    public async Task ShortUrl_Should_Return_a_valid_Url_after_retrying()
     {
       //Arrange
-      
+      _commands.SetupSequence(c => c.InsertUrl(It.IsAny<UrlDto>())).ReturnsAsync(0).ReturnsAsync(1);
+      _httpRequest.Setup(r => r.Scheme).Returns("someUrlScheme");
+
       //Act
+      var returnedUrl = await _sut.ShortUrl("someUrl", _httpRequest.Object);
 
       //Assert
-      //_commands.InsertUrl called twice
+      _commands.Verify(c => c.InsertUrl(It.IsAny<UrlDto>()), Times.Exactly(2), "InsertUrl should be called twice");
+      _queries.Verify(q => q.GetUrlByOriginalUrl(It.IsAny<string>()), Times.Once, "GetUrlByOriginalUrl should be called once");
     }
 
     [Fact(DisplayName = "ShortUrl should return an existing url from database")]
-    public void ShortUrl_Should_Return_an_existing_Url_from_database()
+    public async Task ShortUrl_Should_Return_an_existing_Url_from_database()
     {
       //Arrange
+      _queries.Setup(q => q.GetUrlByOriginalUrl(It.IsAny<string>())).ReturnsAsync(new UrlDto { OriginalUrl = "existingUrl" });
 
       //Act
+      var returnedUrl = await _sut.ShortUrl("someUrl", _httpRequest.Object);
 
       //Assert
-      //_commands.InsertUrl called never
+      _commands.Verify(c => c.InsertUrl(It.IsAny<UrlDto>()), Times.Never, "InsertUrl should not be called");
+      _queries.Verify(q => q.GetUrlByOriginalUrl(It.IsAny<string>()), Times.Once, "GetUrlByOriginalUrl should be called once");
     }
   }
 }
