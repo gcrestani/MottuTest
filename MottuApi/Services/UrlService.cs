@@ -11,6 +11,8 @@ namespace MottuTest.Api.Services
     Task<Url> ShortUrl(string url, HttpRequest request);
     Task<List<Url>> TopUrls(int qty);
     Task<bool> ValidateUrl(string url);
+    Task<Url> ReturnUrlByShortUrl(string shortUrl);
+
   }
   public class UrlService : IUrlService
   {
@@ -43,7 +45,7 @@ namespace MottuTest.Api.Services
         shortUrl = new UrlDto
         {
           Hits = 0,
-          ShortUrl = $"{request.Host}/{urlCode}",
+          ShortUrl = $"{request.Scheme}://{request.Host}/{urlCode}",
           OriginalUrl = url,
         };
         urlId = await _commands.InsertUrl(shortUrl);
@@ -70,6 +72,14 @@ namespace MottuTest.Api.Services
     {
       var url = await _queries.GetUrlByShortUrl(shortUrl);
       return (url!=null);
+    }
+
+    public async Task<Url> ReturnUrlByShortUrl(string shortUrl)
+    {
+      var urlDto = await _queries.GetUrlByShortUrl(shortUrl);
+      if (urlDto == null)
+        return null;
+      return _translator.ToUrl(urlDto);
     }
   }
 }

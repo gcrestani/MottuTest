@@ -24,10 +24,7 @@ builder.Services.AddEntityFrameworkNpgsql()
   options.UseNpgsql(builder.Configuration.GetConnectionString("mottutestConnectionString"))
   );
 
-
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

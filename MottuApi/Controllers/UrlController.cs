@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace MottuTest.Api.Controllers
 {
-  [Route("api/[controller]")]
+  //[Route("[controller]")]
   [ApiController]
   public class UrlController : ControllerBase
   {
@@ -31,7 +31,7 @@ namespace MottuTest.Api.Controllers
     {
       if (!validateInputUrl(inputUrl))
       {
-        return BadRequest("Invalid URL.");
+        return BadRequest("Invalid URL. Url must start with http:// or https://");
       }
 
       var shortenedUrl = await _urlService.ShortUrl(inputUrl, Request) ;
@@ -67,24 +67,32 @@ namespace MottuTest.Api.Controllers
     {
       if (!validateInputUrl(inputShortUrl))
       {
-        return BadRequest("Invalid URL");
+        return BadRequest("Invalid URL. Url must start with http:// or https://");
       }
       var isUrlValid = await _urlService.ValidateUrl(inputShortUrl);
 
       return Ok(isUrlValid);
     }
 
-    [HttpPost("accessUrl")]
-    public async Task<IActionResult> accessUrl(string shortUrlCheck)
+    [HttpGet("{shortUrlCode}")]
+    public async Task<IActionResult> accessUrl(string shortUrlCode)
     {
-      return Ok();
+      var shortUrl = $"{Request.Scheme}://{Request.Host}/{shortUrlCode}";
+      var url = await _urlService.ReturnUrlByShortUrl(shortUrl);
+
+      if (url!=null)
+      {
+        return Redirect(url.OriginalUrl);
+      }
+      return BadRequest("Invalid URL");
     }
 
     private bool validateInputUrl(string url)
     {
-      string Pattern = @"^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$";
-      Regex Rgx = new Regex(Pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-      return Rgx.IsMatch(url);
+      Uri uriResult;
+      bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult)
+          && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+      return result;
     }
   }
 }
