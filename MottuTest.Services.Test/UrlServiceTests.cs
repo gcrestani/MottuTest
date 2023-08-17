@@ -171,7 +171,7 @@ namespace MottuTest.Services.Test
       //Assert
       _queries.Verify(q => q.GetUrlByShortUrl(mockShortUrl), Times.Once, "GetUrlByShortUrl should be called once with the shortUrl as parameter");
       _commands.Verify(c => c.IncrementHitByShortUrl(It.IsAny<UrlDto>()), Times.Never, "IncrementHitByShortUrl should not be called");
-      _translator.Verify(t => t.ToUrl(It.IsAny<UrlDto>()), Times.Never, "ToUrl should not be called once");
+      _translator.Verify(t => t.ToUrl(It.IsAny<UrlDto>()), Times.Never, "ToUrl should not be called");
     }
   }
 }
