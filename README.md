@@ -29,7 +29,7 @@ Inicialmente, inicie um container Docker utilizando o seguinte comando:
 Antes rodar a API, utilize o comando abaixo no Visual Studio para executar as migrations, com o projeto MottuTest.Api.DataStore.Postgres selecionado:
 
     Update-database
-Após isso inicie o projeto normalmente (control + F5)
+Após isso inicie o projeto normalmente (F5)
 
 ## Construido com:
 
