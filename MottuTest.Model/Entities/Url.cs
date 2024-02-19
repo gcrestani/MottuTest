@@ -13,9 +13,11 @@ namespace MottuTest.Model.Models
     [Required]
     [DefaultValue(0)]
     public int Hits { get; set; }
+
     [Required]
     [MaxLength(120)]
     public string OriginalUrl { get; set; }
+
     [Required]
     [MaxLength(120)]
     public string ShortUrl { get; set; }
