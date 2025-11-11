@@ -39,9 +39,12 @@ namespace MottuTest.Api.Services
       
       var urlId = 0;
       UrlDto shortUrl = new UrlDto();
+      int run = 1;
       while (urlId == 0)
       {
-        var urlCode = Path.GetRandomFileName().Replace(".", "").Substring(0, 5);
+  
+        double lenght = Math.Floor(run / 37f) + 1;
+        var urlCode = Path.GetRandomFileName().Replace(".", "").Substring(0, Convert.ToInt32(lenght));
         shortUrl = new UrlDto
         {
           Hits = 0,
@@ -49,6 +52,7 @@ namespace MottuTest.Api.Services
           OriginalUrl = url,
         };
         urlId = await _commands.InsertUrl(shortUrl);
+        run++;
       }
       //send to RabbitMq
       
